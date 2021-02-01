@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var buttonGrid: UIStackView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         for row in buttonGrid.subviews{
             for b in row.subviews{
                 b.layer.cornerRadius = 7
@@ -29,6 +30,9 @@ class ViewController: UIViewController {
         if(command==nil){
             answer.text = "Error"
         }else if(command=="="){
+            if(answer.text == ""){
+                return
+            }
             if(isLastCharacterOperator(sample: answer.text!)){
                 answer.text = String(answer.text!.dropLast())
             }
@@ -40,12 +44,13 @@ class ViewController: UIViewController {
         }else if(command=="BACKSPACE"){
             answer.text = String(answer.text!.dropLast())
         }else{
-            if(!command!.last!.isNumber && isLastCharacterOperator(sample: answer.text!)){
+            if(answer.text=="0" || answer.text==""){
+                answer.text = command!
+            }else
+                if(!command!.last!.isNumber && isLastCharacterOperator(sample: answer.text!)){
                 return
             }
-            if(answer.text=="0"){
-                answer.text = command!
-            }else{
+            else{
                 answer.text! += command!
             }
         }
