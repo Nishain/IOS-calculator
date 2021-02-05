@@ -9,8 +9,9 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    
+        @IBOutlet weak var buttonGrid: UIStackView!
     @IBOutlet weak var answer: UILabel!
-    @IBOutlet weak var buttonGrid: UIStackView!
     let regexExpression = "[\\+\\-x\\/^]{2}|(\\)\\()|([\\+\\-x\\/^]\\))$"
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,12 +77,17 @@ class ViewController: UIViewController {
             if(!isLastCharacterBracket(sample: answer.text!) && isLastCharacterOperator(sample: answer.text!)){
                 answer.text = String(answer.text!.dropLast())
             }
-            let value:NSNumber = NSExpression(format:(answer.text!)
-                                                .replacingOccurrences(of: "x", with: "*")
-                                                .replacingOccurrences(of: "^", with: "**"))
-                .expressionValue(with: nil, context: nil) as! NSNumber
-            answer.text = value.stringValue
+            let expression = (answer.text!)
+            .replacingOccurrences(of: "x", with: "*")
+            .replacingOccurrences(of: "^", with: "**")
+                .replacingOccurrences(of: "/", with: "/1.0/")
+          
+            print(expression)
+            let value:NSNumber = NSExpression(format:expression)
+                    .expressionValue(with: nil, context: nil) as! NSNumber
+                answer.text = value.stringValue
         }
+        
         else if(command=="CLR"){
             answer.text = ""
         }else if(command=="DEL"){
@@ -92,8 +98,9 @@ class ViewController: UIViewController {
             answer.text = String(answer.text!.dropLast())
         }else{
             if(answer.text=="0" || answer.text=="" || answer.text==bracketWarning){
-                answer.text = command!
-                
+                if(command!.first!.isNumber){
+                    answer.text = command!
+                }
             }else if(!validate(a: answer.text!.last!, b: command!.last!)){
                     return
                 }
